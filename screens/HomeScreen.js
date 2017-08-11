@@ -1,15 +1,22 @@
 import React from 'react';
 import { StyleSheet, TouchableHighlight, Text, View } from 'react-native';
 import Dimensions from 'Dimensions';
+import Row from '../components/Row';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       squares: [
-        'Serverless', 'In the Cloud', 'ES6', 'CSS-in-JS', 'ReactJS',
-        ''
-      ]
+        'Serverless', 'In the Cloud', 'ES6', 'CSS-in-JS',
+        'ReactJS', 'One', 'Two', 'Three',
+        'Four', 'Five', 'Six', 'Seven',
+        'Eight', 'One', 'Two', 'Three',
+        'Four', 'Five', 'Six', 'Seven',
+        'ReactJS', 'One', 'Two', 'Three',
+      ],
+      rows: 6,
+      cols: 4
     };
   };
 
@@ -17,8 +24,21 @@ export default class HomeScreen extends React.Component {
     title: 'Welcome',
   };
 
+  squareRows(chunk_size) {
+    const groups = arr.map( function(e,i){
+      return i%chunk_size===0 && arr.slice(i,i+chunk_size);
+    }).filter(function(e){ return e; });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
+    const arrays = [];
+    const squares = this.state.squares.slice(0);
+
+    while (squares.length > 0) {
+      arrays.push(squares.splice(0, this.state.cols));
+    }
+
     return (
       <View style={styles.body}>
         <View>
@@ -26,54 +46,12 @@ export default class HomeScreen extends React.Component {
         </View>
         <View style={styles.grid}>
           {/* Column 1 */}
-          <View style={styles.col}>
           {
-            this.state.squares.map( (square, idx) => (
-              <View style={styles.row} key={idx}>
-                <Text>{square}</Text>
-              </View>
+            arrays.map( (squareSet, idx) => (
+              <Row squares={squareSet} key={"row" + idx} />
             ))
           }
           </View>
-
-          <View style={styles.col}>
-            <View style={styles.row}>
-              <Text>One One</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-          </View>
-
-          {/* Column 2 */}
-          <View style={styles.col}>
-            <View style={styles.row}>
-              <Text>One One</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-            <View style={styles.row}>
-              <Text>One Two</Text>
-            </View>
-          </View>
-
-        </View>
       </View>
     );
   };
@@ -88,24 +66,21 @@ const styles = StyleSheet.create({
   grid: {
     marginTop: 20,
     flex: 1,
-    borderColor: "red",
-    borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   col: {
-    borderColor: "green",
-    borderWidth: 1,
     flex: 1,
     flexDirection: 'column',
   },
   row: {
-    padding: 10,
-    borderColor: "green",
-    borderWidth: 1,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    padding: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: (Dimensions.get('window').width * .25 - 10),
   },
   button: {
     width: (Dimensions.get('window').width * .5 - 30),
